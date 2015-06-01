@@ -1,12 +1,17 @@
-CCNCheck is a fork of DMTCP project. You can check out the DMTCP source from https://github.com/dmtcp/dmtcp
+CCN Application Checkpointing (CCNAC) is a plugin for DMTCP project. You can check out the DMTCP source from https://github.com/dmtcp/dmtcp
 
-Any problems with CCNCheck can be mailed to me at nitinder1369@iiitd.ac.in
+Any problems with CCNAC can be mailed to me at nitinder1369@iiitd.ac.in
 
+UPDATE: Due to certain dependencies, several users have reported errors while checkpointing. We are hard at trying to resolve all such issues.
+Please watch out for future commits.
+
+Pre-requisites: System should have CCNx v0.8.2 installed before attempting to install CCNAC.
+Several users have complained issues with CCNx v1.0. Please consider that particular version unsupported till further updates.
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ..................................................................
 
-CCNCheck RUNNING GUIDELINES AND INSTRUCTIONS
+CCNAC WITH DMTCP RUNNING GUIDELINES AND INSTRUCTIONS
 
 ..................................................................
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -18,15 +23,17 @@ To install, use:
   ./configure
   make
   make check [Important if you want to compile test files as well]
+  [This automatically installs CCNAC along with DMTCP]
 
 3. make install
 
 4. Open new window and start dmtcp coordinator
 	dmtcp_coordinator
 	
-	Press h for help and all commands
+	[Ensure that coordinator registers itself of CCNx as new face for routing will be added]
+	[Press h for help and all commands]
 
-5. On previous window, run a simple counting program 
+5. On previous window, run a simple program (pre-developed. keeps counting until explicitely killed) 
 
 	dmtcp_checkpoint test/dmtcp1
 
@@ -45,7 +52,7 @@ Numbering will now restart from the position where checkpoint was taken.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 .................................................................
 
-RUNNING CCNCheck ON REMOTE NODES
+RUNNING CCNAC ON REMOTE NODES
 
 ..................................................................
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -58,9 +65,9 @@ RUNNING CCNCheck ON REMOTE NODES
 
 2. To connect to this DMTCP_Coordinator, use the command:
 
-	dmtcp_checkpoint --host <IP address of host machine> --port <port number if specified, default:7779> test/dmtcp1 [any application that you want to run]
+	dmtcp_checkpoint --host <IP address of host machine> --port <port number if specified, default:7779> --ccnURI <URI given to that particular node> test/dmtcp1 [any application that you want to run]
 
-3. Check if the machine has conneced by doing "l" on coordinator
+3. Check if the machine has connected by doing "l" on coordinator
 
 
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -77,7 +84,7 @@ CHECKPOINTING ON REMOTE NODES
 	dmtcp_checkpoint --host 127.0.1.1 --port 7779 test/dmtcp1
 
 3. On remote node, connect to dmtcp coordinator and run dmtcp1 as test.
-	dmtcp_checkpoint --host <IP address of host machine> --port <port 		number if specified, default:7779> test/dmtcp1 
+	dmtcp_checkpoint --host <IP address of host machine> --port <port number if specified, default:7779> --ccnURI <ccn name of the coordinator> test/dmtcp1 
 
 4. Take a manual checkpoint on coordinator by "c"
 
@@ -93,6 +100,6 @@ CHECKPOINTING ON REMOTE NODES
 ##### Even if one of the existing nodes is still running on coordinator, restart command would throw a JASSERT error. All nodes must be killed to resume from stable state.
 
 8. restart checkpoint on Node 2 by:
-	dmtcp_restart --host 192.168.32.192 --port 7779 ckpt....
+	dmtcp_restart --host 192.168.32.192 --port 7779 --ccnURI <ccn name of the coordinator> ckpt....
 
 9. If all the nodes are connected in such a way, the counting will resume from local checkpoint simultaneously.
